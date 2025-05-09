@@ -8,7 +8,7 @@ For a comparison of the features available in these two libraries, see [this doc
 
 Directory: [`packages/grpc-js`](./packages/grpc-js)
 
-github npm package: [@emmveqz/grpc-node-web](https://github.com/users/emmveqz/packages/npm/package/grpc-node-web)
+npm package: [@emmveqz/grpc-node-web](https://www.npmjs.com/package/@emmveqz/grpc-node-web)
 
 This library implements the core functionality of gRPC purely in JavaScript, without a C++ addon. It works on the latest versions of Node.js on all platforms that Node.js runs on.
 

@@ -12,9 +12,15 @@
     "node": ">=12.10.0"
   },
   "publishConfig": {
-    "registry": "https://npm.pkg.github.com"
+    "registry": "https://registry.npmjs.org"
   },
-  "keywords": [],
+  "keywords": [
+    "grpc",
+    "grpc-server",
+    "grpc-web",
+    "grpc-node",
+    "grpc-js"
+  ],
   "author": {
     "name": "Google Inc."
   },
