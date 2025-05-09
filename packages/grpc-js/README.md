@@ -4,13 +4,33 @@
 
 Node 12 is recommended. The exact set of compatible Node versions can be found in the `engines` field of the `package.json` file.
 
+
+You'll need to specify the npm package registry in your `.npmrc` file, like so:
+
+```.ini
+@emmveqz:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_AUTHTOKEN
+```
+
+Then:
+
 ```sh
-npm install @grpc/grpc-js
+npm install @emmveqz/grpc-node-web
 ```
 
 ## Documentation
 
 Documentation specifically for the `@grpc/grpc-js` package is currently not available. However, [documentation is available for the `grpc` package](https://grpc.github.io/grpc/node/grpc.html), and the two packages contain mostly the same interface. There are a few notable differences, however, and these differences are noted in the "Migrating from grpc" section below.
+
+## CORS
+
+```typescript
+import * as grpc from '@emmveqz/grpc-node-web'
+
+const grpcServer = new grpc.Server({
+  allowedOrigin: 'https://my-web-browser-app.com',
+})
+```
 
 ## Features
 

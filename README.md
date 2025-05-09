@@ -2,13 +2,13 @@
 
 ## Implementations
 
-For a comparison of the features available in these two libraries, see [this document](https://github.com/grpc/grpc-node/tree/master/PACKAGE-COMPARISON.md)
+For a comparison of the features available in these two libraries, see [this document](./PACKAGE-COMPARISON.md)
 
 ### Pure JavaScript Client and Server
 
-Directory: [`packages/grpc-js`](https://github.com/grpc/grpc-node/tree/master/packages/grpc-js)
+Directory: [`packages/grpc-js`](./packages/grpc-js)
 
-npm package: [@grpc/grpc-js](https://www.npmjs.com/package/@grpc/grpc-js)
+github npm package: [@emmveqz/grpc-node-web](https://github.com/users/emmveqz/packages/npm/package/grpc-node-web)
 
 This library implements the core functionality of gRPC purely in JavaScript, without a C++ addon. It works on the latest versions of Node.js on all platforms that Node.js runs on.
 
