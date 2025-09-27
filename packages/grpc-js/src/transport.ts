@@ -712,21 +712,40 @@ export class Http2SubchannelConnector implements SubchannelConnector {
           reject(`${errorMessage} (${new Date().toISOString()})`);
         }
       };
-      const session = http2.connect(`${scheme}://${targetPath}`, {
+      const sessionOptions: http2.ClientSessionOptions = {
         createConnection: (authority, option) => {
           return secureConnectResult.socket;
         },
         settings: {
           initialWindowSize:
             options['grpc-node.flow_control_window'] ??
-            http2.getDefaultSettings().initialWindowSize,
+            http2.getDefaultSettings?.()?.initialWindowSize ?? 65535,
         }
-      });
+      };
+      const session = http2.connect(`${scheme}://${targetPath}`, sessionOptions);
+      // Prepare window size configuration for remoteSettings handler
+      const defaultWin = http2.getDefaultSettings?.()?.initialWindowSize ?? 65535; // 65 535 B
+      const connWin = options[
+        'grpc-node.flow_control_window'
+      ] as number | undefined;
+
       this.session = session;
       let errorMessage = 'Failed to connect';
       let reportedError = false;
       session.unref();
       session.once('remoteSettings', () => {
+        // Send WINDOW_UPDATE now to avoid 65 KB start-window stall.
+        if (connWin && connWin > defaultWin) {
+          try {
+            // Node ≥ 14.18
+            (session as any).setLocalWindowSize(connWin);
+          } catch {
+            // Older Node: bump by the delta
+            const delta = connWin - (session.state.localWindowSize ?? defaultWin);
+            if (delta > 0) (session as any).incrementWindowSize(delta);
+          }
+        }
+
         session.removeAllListeners();
         secureConnectResult.socket.removeListener('close', closeHandler);
         secureConnectResult.socket.removeListener('error', errorHandler);
@@ -780,6 +799,7 @@ export class Http2SubchannelConnector implements SubchannelConnector {
       await secureConnector.waitForReady();
       this.trace(addressString + ' secureConnector is ready');
       tcpConnection = await this.tcpConnect(address, options);
+      tcpConnection.setNoDelay();
       this.trace(addressString + ' Established TCP connection');
       secureConnectResult = await secureConnector.connect(tcpConnection);
       this.trace(addressString + ' Established secure connection');
