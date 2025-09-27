@@ -1,6 +1,6 @@
 {
   "name": "@emmveqz/grpc-node-web",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Exactly as @grpc/grpc-js but with web browser CORS capability",
   "homepage": "https://grpc.io/",
   "repository": {
