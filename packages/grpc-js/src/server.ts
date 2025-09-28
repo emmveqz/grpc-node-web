@@ -371,6 +371,9 @@ export class Server {
         maxConcurrentStreams: this.options['grpc.max_concurrent_streams'],
       };
     }
+    if ('allowedOrigin' in this.options) {
+      this.options['grpc.allow_origin'] = this.options.allowedOrigin;
+    }
     this.allowedOrigin = this.options.allowedOrigin;
     this.interceptors = this.options.interceptors ?? [];
     this.trace('Server constructed');
