@@ -546,6 +546,7 @@ export class BaseServerInterceptingCall
   private connectionInfo: ConnectionInfo;
   private metricsRecorder = new PerRequestMetricRecorder();
   private shouldSendMetrics: boolean;
+  private allowedOrigin?: string;
 
   constructor(
     private readonly stream: http2.ServerHttp2Stream,
@@ -597,6 +598,9 @@ export class BaseServerInterceptingCall
     }
     if ('grpc.max_receive_message_length' in options) {
       this.maxReceiveMessageSize = options['grpc.max_receive_message_length']!;
+    }
+    if ('grpc.allow_origin' in options) {
+      this.allowedOrigin = options['grpc.allow_origin']!;
     }
 
     this.host = headers[':authority'] ?? headers.host!;
@@ -877,10 +881,17 @@ export class BaseServerInterceptingCall
 
     this.metadataSent = true;
     const custom = metadata ? metadata.toHttp2Headers() : null;
+    const allowedOriginHeader = this.allowedOrigin
+      ? {
+          [http2.constants.HTTP2_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN]:
+            this.allowedOrigin,
+        }
+      : null;
     const headers = {
       ...defaultResponseHeaders,
       ...defaultCompressionHeaders,
       ...custom,
+      ...allowedOriginHeader,
     };
     this.stream.respond(headers, defaultResponseOptions);
   }
@@ -978,12 +989,21 @@ export class BaseServerInterceptingCall
         this.callEventTracker.onStreamEnd(true);
         this.callEventTracker.onCallEnd(status);
       }
+
+      const allowedOriginHeader = this.allowedOrigin
+        ? {
+            [http2.constants.HTTP2_HEADER_ACCESS_CONTROL_ALLOW_ORIGIN]:
+              this.allowedOrigin,
+          }
+        : null;
+
       // Trailers-only response
       const trailersToSend: http2.OutgoingHttpHeaders = {
         [GRPC_STATUS_HEADER]: status.code,
         [GRPC_MESSAGE_HEADER]: encodeURI(status.details),
         ...defaultResponseHeaders,
         ...statusMetadata.toHttp2Headers(),
+        ...allowedOriginHeader,
       };
       this.stream.respond(trailersToSend, { endStream: true });
       this.notifyOnCancel();

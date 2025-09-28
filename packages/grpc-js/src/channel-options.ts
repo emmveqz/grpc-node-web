@@ -21,6 +21,7 @@ import { CompressionAlgorithms } from './compression-algorithms';
  * An interface that contains options used when initializing a Channel instance.
  */
 export interface ChannelOptions {
+  'grpc.allow_origin'?: string;
   'grpc.ssl_target_name_override'?: string;
   'grpc.primary_user_agent'?: string;
   'grpc.secondary_user_agent'?: string;
