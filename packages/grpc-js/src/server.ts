@@ -1288,7 +1288,7 @@ export class Server {
           [http2.constants.HTTP2_HEADER_ACCESS_CONTROL_ALLOW_METHODS]:
             'OPTIONS,POST',
           [http2.constants.HTTP2_HEADER_ACCESS_CONTROL_ALLOW_HEADERS]:
-            'Accept-Encoding,Content-Type,Grpc-Accept-Encoding,Te,X-Grpc-Accept-Encoding,X-Te',
+            'Accept-Encoding,Content-Type,Grpc-Accept-Encoding,Grpc-Encoding,Te,X-Grpc-Accept-Encoding,X-Grpc-Encoding,X-Te',
           [http2.constants.HTTP2_HEADER_STATUS]: http2.constants.HTTP_STATUS_OK,
         },
         { endStream: true }
