@@ -1377,6 +1377,10 @@ export class Server {
     this.callTracker.addCallStarted();
     channelzSessionInfo?.streamTracker.addCallStarted();
 
+    if (this._respondWithCORS(stream, headers)) {
+      return;
+    }
+
     if (!this._verifyContentType(stream, headers)) {
       this.callTracker.addCallFailed();
       channelzSessionInfo?.streamTracker.addCallFailed();
